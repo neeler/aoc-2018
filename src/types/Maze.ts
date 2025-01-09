@@ -1,50 +1,44 @@
-import { Grid, GridCoordinate, GridNode } from '~/types/Grid';
-import { Queue } from '~/types/Queue';
+import { Grid, GridCoordinate, GridNode } from 'src/types/grid';
+import { Queue } from '~/types/queues';
 import { parseStringBlock } from '~/util/parsing';
 
-export class MazeNode extends GridNode {
+interface MazeNodeData {
     char?: string;
     obstacle: boolean;
-    bestScore = Infinity;
-    isBestPath = false;
-
-    constructor({
-        row,
-        col,
-        obstacle = false,
-    }: GridCoordinate & {
-        obstacle?: boolean;
-    }) {
-        super({ row, col });
-        this.obstacle = obstacle;
-    }
-
-    toString() {
-        if (this.obstacle) {
-            return '#';
-        }
-
-        if (this.bestScore !== Infinity) {
-            return this.bestScore.toString().slice(-1);
-        }
-
-        if (this.char) {
-            return this.char;
-        }
-
-        return '.';
-    }
+    bestScore: number;
+    isBestPath: boolean;
 }
 
-export class Maze extends Grid<MazeNode> {
+export type MazeNode = GridNode<MazeNodeData>;
+
+export class Maze extends Grid<MazeNodeData> {
     hasScores = false;
     hasBestPath = false;
 
     constructor({ width, height }: { width: number; height: number }) {
         super({
-            maxX: width - 1,
-            maxY: height - 1,
-            defaultValue: (row, col) => new MazeNode({ row, col }),
+            width,
+            height,
+            defaultValue: () => ({
+                obstacle: false,
+                bestScore: Infinity,
+                isBestPath: false,
+            }),
+            drawFn: ({ data }) => {
+                if (data.obstacle) {
+                    return '#';
+                }
+
+                if (data.bestScore !== Infinity) {
+                    return data.bestScore.toString().slice(-1);
+                }
+
+                if (data.char) {
+                    return data.char;
+                }
+
+                return '.';
+            },
         });
     }
 
@@ -60,9 +54,9 @@ export class Maze extends Grid<MazeNode> {
             endChar?: string;
         } = {},
     ) {
-        const data = parseStringBlock(block);
-        const width = Math.max(...data.map((row) => row.length));
-        const height = data.length;
+        const stringData = parseStringBlock(block);
+        const height = stringData.length;
+        const width = stringData[0]!.length;
         const maze = new Maze({
             width,
             height,
@@ -74,19 +68,20 @@ export class Maze extends Grid<MazeNode> {
         let end: MazeNode | undefined;
 
         if (obstacleChar) {
-            maze.forEach((node, row, col) => {
+            maze.forEach((node) => {
                 if (node) {
-                    node.char = data[row]?.[col];
-                    node.obstacle = node.char === obstacleChar;
-                    if (node.obstacle) {
+                    const { row, col, data } = node;
+                    data.char = stringData[row]?.[col];
+                    data.obstacle = data.char === obstacleChar;
+                    if (data.obstacle) {
                         obstacles.push(node);
                     } else {
                         nonObstacles.push(node);
                     }
-                    if (node.char === startChar) {
+                    if (data.char === startChar) {
                         start = node;
                     }
-                    if (node.char === endChar) {
+                    if (data.char === endChar) {
                         end = node;
                     }
                 }
@@ -119,7 +114,7 @@ export class Maze extends Grid<MazeNode> {
         const end = this.get(endCoord)!;
 
         const queue = new Queue<MazeNode>();
-        start.bestScore = 0;
+        start.data.bestScore = 0;
         queue.add(start);
 
         queue.process((node) => {
@@ -128,20 +123,23 @@ export class Maze extends Grid<MazeNode> {
                 return;
             }
 
-            const score = node.bestScore;
-            const neighbors = this.getOrthogonalNeighborsOf(node.row, node.col);
+            const score = node.data.bestScore;
+            const neighbors = this.getOrthogonalNeighbors(node);
             neighbors.forEach((neighbor) => {
-                if (neighbor.bestScore <= score + 1 || neighbor.obstacle) {
+                if (
+                    neighbor.data.bestScore <= score + 1 ||
+                    neighbor.data.obstacle
+                ) {
                     return;
                 }
 
-                neighbor.bestScore = score + 1;
+                neighbor.data.bestScore = score + 1;
 
                 queue.add(neighbor);
             });
         });
 
-        const score = end.bestScore;
+        const score = end.data.bestScore;
 
         if (resetAfter) {
             this.resetScores();
@@ -171,18 +169,18 @@ export class Maze extends Grid<MazeNode> {
                 queue.reset();
                 return;
             }
-            const neighbors = this.getOrthogonalNeighborsOf(node.row, node.col);
-            const bestNeighbor = this.getOrthogonalNeighborsOf(
-                node.row,
-                node.col,
-            ).reduce((best, neighbor) => {
-                if (best && neighbor.bestScore < best.bestScore) {
-                    return neighbor;
-                }
-                return best;
-            }, neighbors[0]);
+            const neighbors = this.getOrthogonalNeighbors(node);
+            const bestNeighbor = this.getOrthogonalNeighbors(node).reduce(
+                (best, neighbor) => {
+                    if (best && neighbor.data.bestScore < best.data.bestScore) {
+                        return neighbor;
+                    }
+                    return best;
+                },
+                neighbors[0],
+            );
             if (bestNeighbor) {
-                bestNeighbor.isBestPath = true;
+                bestNeighbor.data.isBestPath = true;
                 queue.add(bestNeighbor);
             } else {
                 queue.reset();
@@ -194,7 +192,7 @@ export class Maze extends Grid<MazeNode> {
     resetScores() {
         this.forEach((node) => {
             if (node) {
-                node.bestScore = Infinity;
+                node.data.bestScore = Infinity;
             }
         });
         this.hasBestPath = false;
@@ -203,8 +201,8 @@ export class Maze extends Grid<MazeNode> {
     drawWithScores() {
         let longestScore = 0;
         this.forEach((node) => {
-            if (node && node.bestScore !== Infinity) {
-                const score = node.bestScore.toString();
+            if (node && node.data.bestScore !== Infinity) {
+                const score = node.data.bestScore.toString();
                 if (score.length > longestScore) {
                     longestScore = score.length;
                 }
@@ -215,15 +213,15 @@ export class Maze extends Grid<MazeNode> {
             if (!node) {
                 return ''.padEnd(padding, ' ');
             }
-            if (node.bestScore === Infinity) {
+            if (node.data.bestScore === Infinity) {
                 return '#'.repeat(longestScore).padEnd(padding, ' ');
             }
             return this.hasBestPath
-                ? (node.isBestPath
-                      ? node.bestScore.toString()
+                ? (node.data.isBestPath
+                      ? node.data.bestScore.toString()
                       : '#'.repeat(longestScore)
                   ).padEnd(padding, ' ')
-                : node.bestScore.toString().padEnd(padding, ' ');
+                : node.data.bestScore.toString().padEnd(padding, ' ');
         });
     }
 }

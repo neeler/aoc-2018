@@ -1,4 +1,4 @@
-import { ProcessStruct } from '~/types/ProcessStruct';
+import { ProcessStruct } from '~/types/queues/ProcessStruct';
 
 export type Comparator<T> = (first: T, second: T) => number;
 

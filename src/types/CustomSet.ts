@@ -13,16 +13,18 @@ export class CustomSet<TData, TKey = string> {
         },
     ) {}
 
-    static fromArray<TData, TKey = string>(
-        arr: TData[],
+    static from<TData, TKey = string>(
+        items: Iterable<TData>,
         getKey: (item: TData) => TKey,
     ) {
         const customSet = new CustomSet<TData, TKey>({ getKey });
-        arr.forEach((item) => customSet.add(item));
+        for (const item of items) {
+            customSet.add(item);
+        }
         return customSet;
     }
 
-    add(item: TData) {
+    add(item: TData): void {
         const key = this.config.getKey(item);
 
         if (!this.itemMap.has(key)) {
@@ -30,20 +32,19 @@ export class CustomSet<TData, TKey = string> {
         }
     }
 
-    get(key: TKey) {
+    get(key: TKey): TData | undefined {
         return this.itemMap.get(key);
     }
 
-    getLike(item: TData) {
+    getLike(item: TData): TData | undefined {
         return this.get(this.config.getKey(item));
     }
 
-    delete(item: TData) {
-        const key = this.config.getKey(item);
-        this.deleteKey(key);
+    delete(item: TData): void {
+        this.deleteKey(this.config.getKey(item));
     }
 
-    clear() {
+    clear(): void {
         this.itemMap = new Map<TKey, TData>();
     }
 
@@ -51,25 +52,25 @@ export class CustomSet<TData, TKey = string> {
         return this.hasKey(this.config.getKey(item));
     }
 
-    hasKey(key: TKey) {
+    hasKey(key: TKey): boolean {
         return this.itemMap.has(key);
     }
 
-    deleteKey(key: TKey) {
+    deleteKey(key: TKey): void {
         if (this.itemMap.has(key)) {
             this.itemMap.delete(key);
         }
     }
 
-    keys() {
-        return [...this.itemMap.keys()];
+    keys(): MapIterator<TKey> {
+        return this.itemMap.keys();
     }
 
-    values() {
-        return [...this.itemMap.values()];
+    values(): MapIterator<TData> {
+        return this.itemMap.values();
     }
 
-    get size() {
+    get size(): number {
         return this.itemMap.size;
     }
 }

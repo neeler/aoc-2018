@@ -1,4 +1,4 @@
-import { ProcessStruct } from '~/types/ProcessStruct';
+import { ProcessStruct } from '~/types/queues/ProcessStruct';
 
 export class Stack<T> implements ProcessStruct<T> {
     private readonly stack: T[] = [];

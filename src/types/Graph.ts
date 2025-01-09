@@ -1,5 +1,4 @@
-import { Queue } from '~/types/Queue';
-import { PriorityQueue } from '~/types/PriorityQueue';
+import { PriorityQueue } from '~/types/queues';
 
 export class Graph {
     nodes = new Set<GraphNode>();

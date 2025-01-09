@@ -1,4 +1,4 @@
-import { Grid } from '~/types/Grid';
+import { Grid } from 'src/types/grid';
 
 const smallLettersPresented = 'ABCDEFGHIJKLOPRSUYZ'.split('');
 const rawSmallLetters = `
@@ -8,7 +8,7 @@ const rawSmallLetters = `
 ####.#..#.#....#..#.#....#....#.##.#..#..#......#.#.#..#....#..#.###..###...##..#..#...#...#..
 #..#.#..#.#..#.#..#.#....#....#..#.#..#..#...#..#.#.#..#....#..#.#....#.#.....#.#..#...#..#...
 #..#.###...##..###..####.#.....###.#..#.###...##..#..#.####..##..#....#..#.###...##....#..####`.trim();
-const smallLetterGrid = Grid.fromStringBlock(rawSmallLetters);
+const smallLetterGrid = Grid.fromString(rawSmallLetters);
 const smallLettersToChars = new Map<string, string>();
 const smallLetterWidth = 5;
 for (const [iLetter, letter] of smallLettersPresented.entries()) {
@@ -16,7 +16,7 @@ for (const [iLetter, letter] of smallLettersPresented.entries()) {
     for (let row = 0; row < smallLetterGrid.height; row++) {
         rows.push(
             smallLetterGrid
-                .getRow(row)
+                .getRow(row)!
                 .slice(
                     iLetter * smallLetterWidth,
                     (iLetter + 1) * smallLetterWidth,
@@ -46,7 +46,7 @@ const rawBigLetters = `
 #....#.#....#.#......#......#......#....#.#....#.#...#..#..#...#......#...##.#......#...#...#..#..#......
 #....#.#....#.#....#.#......#......#...##.#....#.#...#..#...#..#......#...##.#......#....#.#....#.#......
 #....#.#####...####..######.#.......###.#.#....#..###...#....#.######.#....#.#......#....#.#....#.######.`.trim();
-const bigLetterGrid = Grid.fromStringBlock(rawBigLetters);
+const bigLetterGrid = Grid.fromString(rawBigLetters);
 const bigLettersToChars = new Map<string, string>();
 const bigLetterWidth = 7;
 for (const [iLetter, letter] of bigLettersPresented.entries()) {
@@ -54,7 +54,7 @@ for (const [iLetter, letter] of bigLettersPresented.entries()) {
     for (let row = 0; row < bigLetterGrid.height; row++) {
         rows.push(
             bigLetterGrid
-                .getRow(row)
+                .getRow(row)!
                 .slice(iLetter * bigLetterWidth, (iLetter + 1) * bigLetterWidth)
                 .join(''),
         );

@@ -1,5 +1,5 @@
-import { Queue } from '~/types/Queue';
-import { ProcessStruct } from '~/types/ProcessStruct';
+import { Queue } from '~/types/queues';
+import { ProcessStruct } from '~/types/queues/ProcessStruct';
 
 export interface StateMachineConfig<TData extends object> {
     isEnd: (state: TData) => boolean;

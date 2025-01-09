@@ -1,4 +1,4 @@
-import { ProcessStruct } from '~/types/ProcessStruct';
+import { ProcessStruct } from '~/types/queues/ProcessStruct';
 
 export class Queue<T> implements ProcessStruct<T> {
     readonly queue: T[] = [];
