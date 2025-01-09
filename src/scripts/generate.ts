@@ -73,7 +73,7 @@ ${Array.from(
     (v, i) => `    puzzle${i + 1},`,
 ).join('\n')}
 } from '~/puzzles';
-import { Timer } from '~/util/Timer';
+import { Timer } from '~/types/Timer';
 
 async function start() {    
     const timer = new Timer();
