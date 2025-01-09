@@ -1,6 +1,6 @@
 import { Puzzle } from './Puzzle';
 import { splitFilter } from '~/util/parsing';
-import { countCharacters } from '~/util/strings';
+import { countCharacters, stringSplice } from '~/util/strings';
 
 export const puzzle2 = new Puzzle({
     day: 2,
@@ -21,7 +21,7 @@ export const puzzle2 = new Puzzle({
         const shortIdSet = new Set<string>();
         for (const id of ids) {
             for (let i = 0; i < id.length; i++) {
-                const shortId = `${id.slice(0, i)}${id.slice(i + 1)}-${i}`;
+                const shortId = stringSplice(id, i, 1) + `-${i}`;
                 if (shortIdSet.has(shortId)) {
                     return shortId.split('-')[0];
                 }

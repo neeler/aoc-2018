@@ -7,3 +7,12 @@ export function countCharacters(s: string) {
 
     return charCounts;
 }
+
+export function stringSplice(
+    s: string,
+    start: number,
+    deleteCount: number,
+    stringToInsert = '',
+) {
+    return s.slice(0, start) + stringToInsert + s.slice(start + deleteCount);
+}
