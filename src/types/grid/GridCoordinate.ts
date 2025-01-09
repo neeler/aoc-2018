@@ -7,10 +7,15 @@ export interface GridCoordinate {
 }
 
 export class GridCoordinateSet extends CustomSet<GridCoordinate> {
-    constructor() {
+    constructor(positions?: Iterable<GridCoordinate>) {
         super({
             getKey: ({ row, col }) => `${row},${col}`,
         });
+        if (positions) {
+            for (const position of positions) {
+                this.add(position);
+            }
+        }
     }
 }
 

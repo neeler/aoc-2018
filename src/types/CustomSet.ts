@@ -40,6 +40,10 @@ export class CustomSet<TData, TKey = string> {
         return this.get(this.config.getKey(item));
     }
 
+    getKey(item: TData): TKey {
+        return this.config.getKey(item);
+    }
+
     delete(item: TData): void {
         this.deleteKey(this.config.getKey(item));
     }
