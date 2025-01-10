@@ -6,6 +6,13 @@ export function sum(numbers: number[]): number {
 }
 
 /**
+ * Returns the sum of the items in the array, given a function that determines the value of each item.
+ */
+export function sumBy<T>(items: T[], valueOf: (item: T) => number): number {
+    return items.reduce((sumSoFar, item) => sumSoFar + valueOf(item), 0);
+}
+
+/**
  * Returns the product of the numbers in the array.
  */
 export function product(numbers: number[]): number {
