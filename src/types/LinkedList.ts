@@ -58,20 +58,74 @@ export class LinkedList<T> {
         }
     }
 
+    insertAfter(node: LinkedListNode<T>, value: T) {
+        const newNode = new LinkedListNode(value);
+        newNode.next = node.next;
+        if (newNode.next) {
+            newNode.next.prev = newNode;
+        }
+        newNode.prev = node;
+        node.next = newNode;
+
+        if (this.tail === node) {
+            this.tail = newNode;
+        }
+
+        this.size++;
+
+        return newNode;
+    }
+
+    insertBefore(node: LinkedListNode<T>, value: T) {
+        const newNode = new LinkedListNode(value);
+        newNode.prev = node.prev;
+        if (newNode.prev) {
+            newNode.prev.next = newNode;
+        }
+        newNode.next = node;
+        node.prev = newNode;
+
+        if (this.head === node) {
+            this.head = newNode;
+        }
+
+        this.size++;
+
+        return newNode;
+    }
+
     getNFrom(node: LinkedListNode<T>, n: number): LinkedListNode<T> | null {
+        if (n === 0) {
+            return node;
+        }
+
         let current: LinkedListNode<T> | null = node;
-        for (let i = 0; current && i < n; i++) {
-            current = current.next;
+        const iters = Math.abs(n);
+        for (let i = 0; current && i < iters; i++) {
+            current = n < 0 ? current.prev : current.next;
         }
 
         return current;
     }
 
+    *nodes(): Generator<LinkedListNode<T>> {
+        let current = this.head;
+        const nodesSeen = new Set<LinkedListNode<T>>();
+
+        while (current && !nodesSeen.has(current)) {
+            nodesSeen.add(current);
+            yield current;
+            current = current.next;
+        }
+    }
+
     toArray(): T[] {
         const arr: T[] = [];
         let current = this.head;
+        const nodesSeen = new Set<LinkedListNode<T>>();
 
-        while (current) {
+        while (current && !nodesSeen.has(current)) {
+            nodesSeen.add(current);
             arr.push(current.value);
             current = current.next;
         }
