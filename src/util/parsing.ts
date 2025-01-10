@@ -35,12 +35,6 @@ export function parseNumberList(
 export function getNumbers(str: string): number[] {
     return str.match(/-?\d+/g)?.map(Number) ?? [];
 }
-/**
- * Get numbers from a multiline string, including negative numbers.
- */
-export function getMultilineNumbers(str: string): number[] {
-    return str.match(/-?\d+/gm)?.map(Number) ?? [];
-}
 
 /**
  * Get numbers from each line of a string, including negative numbers.

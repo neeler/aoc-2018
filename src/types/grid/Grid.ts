@@ -224,6 +224,19 @@ export class Grid<T> {
         return this.grid.map((rowOfNodes, iRow) => fn(rowOfNodes, iRow));
     }
 
+    toRawString(drawFn?: (node: GridNode<T>) => string) {
+        return this.grid
+            .map((rowOfNodes) =>
+                rowOfNodes
+                    .map(
+                        (node) =>
+                            (drawFn ?? this.drawFn)?.(node) ?? node.toString(),
+                    )
+                    .join(''),
+            )
+            .join('\n');
+    }
+
     toString(drawFn?: (node: GridNode<T>) => string) {
         const padding = Math.max(4, this.height.toString().length + 1);
 

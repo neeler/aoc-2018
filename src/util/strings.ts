@@ -1,3 +1,5 @@
+import { range } from '~/util/range';
+
 export function countCharacters(s: string) {
     const charCounts = new Map<string, number>();
 
@@ -16,3 +18,7 @@ export function stringSplice(
 ) {
     return s.slice(0, start) + stringToInsert + s.slice(start + deleteCount);
 }
+
+export const alphanumericCharCodes = range(48, 58)
+    .concat(range(65, 91))
+    .concat(range(97, 123));
