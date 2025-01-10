@@ -64,3 +64,16 @@ export function minOf<T>(
     }
     return max;
 }
+
+export function filterToArray<T>(
+    iterable: Iterable<T>,
+    predicate: (item: T) => any,
+): T[] {
+    const filtered: T[] = [];
+    for (const item of iterable) {
+        if (predicate(item)) {
+            filtered.push(item);
+        }
+    }
+    return filtered;
+}
