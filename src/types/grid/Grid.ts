@@ -69,7 +69,14 @@ export class Grid<T> {
         this.drawFn = drawFn;
     }
 
-    static from2DArray<TInput>(arr: TInput[][]): Grid<TInput> {
+    static from2DArray<TInput>(
+        arr: TInput[][],
+        {
+            drawFn,
+        }: {
+            drawFn?: (node: GridNode<TInput>) => string;
+        } = {},
+    ): Grid<TInput> {
         const height = arr.length;
         const width = arr[0]?.length ?? 0;
 
@@ -81,11 +88,14 @@ export class Grid<T> {
             height,
             width,
             defaultValue: ({ row, col }) => arr[row]![col]!,
+            drawFn,
         });
     }
 
     static fromString(data: string): Grid<string> {
-        return Grid.from2DArray(parseStringBlock(data));
+        return Grid.from2DArray(parseStringBlock(data), {
+            drawFn: (node) => node.data,
+        });
     }
 
     clone(): Grid<T> {
@@ -270,5 +280,32 @@ export class Grid<T> {
         console.log(`
 ${this.toString(drawFn)}
 `);
+    }
+
+    get data() {
+        return this.grid.map((row) => row.map((node) => node.data));
+    }
+
+    getSubGrid({
+        row: startRow,
+        col: startCol,
+        width,
+        height,
+        blankValue,
+    }: {
+        row: number;
+        col: number;
+        width: number;
+        height: number;
+        blankValue: T;
+    }) {
+        return new Grid<T>({
+            width,
+            height,
+            defaultValue: ({ row, col }) =>
+                this.get({ row: row + startRow, col: col + startCol })?.data ??
+                blankValue,
+            drawFn: this.drawFn,
+        });
     }
 }

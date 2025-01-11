@@ -52,3 +52,17 @@ export function mulCoordinates(
 export function manhattanDistance(p1: GridCoordinate, p2: GridCoordinate) {
     return Math.abs(p1.row - p2.row) + Math.abs(p1.col - p2.col);
 }
+
+export function getCoordinateBounds(points: GridCoordinate[]) {
+    let minRow = Infinity;
+    let minCol = Infinity;
+    let maxRow = -Infinity;
+    let maxCol = -Infinity;
+    for (const { row, col } of points) {
+        minRow = Math.min(minRow, row);
+        minCol = Math.min(minCol, col);
+        maxRow = Math.max(maxRow, row);
+        maxCol = Math.max(maxCol, col);
+    }
+    return { minRow, minCol, maxRow, maxCol };
+}
