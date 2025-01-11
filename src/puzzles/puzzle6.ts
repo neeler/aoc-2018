@@ -1,7 +1,11 @@
 import { Puzzle } from './Puzzle';
 import { getNumbersForEachLine } from '~/util/parsing';
-import { Grid, GridCoordinate, GridNode } from '~/types/grid';
-import { manhattanDistance } from '~/util/gridMath';
+import {
+    Grid,
+    GridCoordinate,
+    GridNode,
+    manhattanDistance,
+} from '~/types/grid';
 import { maxOf } from '~/util/iterables';
 import { alphanumericCharCodes } from '~/util/strings';
 

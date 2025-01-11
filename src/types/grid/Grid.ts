@@ -8,8 +8,8 @@ import {
 import {
     getCoordsInDirection,
     GridCoordinate,
+    manhattanDistance,
 } from '~/types/grid/GridCoordinate';
-import { manhattanDistance } from '~/util/gridMath';
 import { findBy } from '~/util/iterables';
 
 export class GridNode<T = undefined> {
