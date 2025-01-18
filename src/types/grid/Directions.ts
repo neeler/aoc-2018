@@ -74,6 +74,8 @@ export const CharDirectionMap = {
     '>': Directions.right,
 } satisfies Record<string, OrthogonalDirection>;
 
+export type OrthogonalDirectionChar = keyof typeof CharDirectionMap;
+
 export const OrthogonalDirectionsToChars = {
     [Directions.up]: '^',
     [Directions.down]: 'v',
@@ -101,4 +103,15 @@ export const CounterClockwiseRotation = {
     [Directions.downLeft]: Directions.downRight,
     [Directions.downRight]: Directions.upRight,
     [Directions.upRight]: Directions.upLeft,
+} satisfies Record<Direction, Direction>;
+
+export const OppositeDirections = {
+    [Directions.up]: Directions.down,
+    [Directions.down]: Directions.up,
+    [Directions.left]: Directions.right,
+    [Directions.right]: Directions.left,
+    [Directions.upLeft]: Directions.downRight,
+    [Directions.downRight]: Directions.upLeft,
+    [Directions.downLeft]: Directions.upRight,
+    [Directions.upRight]: Directions.downLeft,
 } satisfies Record<Direction, Direction>;

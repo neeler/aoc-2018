@@ -92,6 +92,40 @@ export class Grid<T> {
         });
     }
 
+    static from2DArrayCustom<TInput, TData>(
+        arr: TInput[][],
+        {
+            drawFn,
+            dataFn,
+        }: {
+            drawFn?: (node: GridNode<TData>) => string;
+            dataFn: (
+                data: GridCoordinate & {
+                    input: TInput;
+                },
+            ) => TData;
+        },
+    ): Grid<TData> {
+        const height = arr.length;
+        const width = arr[0]?.length ?? 0;
+
+        if (!(width > 0 && height > 0)) {
+            throw new Error('Invalid input dimensions');
+        }
+
+        return new Grid<TData>({
+            height,
+            width,
+            defaultValue: ({ row, col }) =>
+                dataFn({
+                    row,
+                    col,
+                    input: arr[row]![col]!,
+                }),
+            drawFn,
+        });
+    }
+
     static fromString(data: string): Grid<string> {
         return Grid.from2DArray(parseStringBlock(data), {
             drawFn: (node) => node.data,
