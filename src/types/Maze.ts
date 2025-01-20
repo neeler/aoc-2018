@@ -101,10 +101,12 @@ export class Maze extends Grid<MazeNodeData> {
         start: startCoord,
         end: endCoord,
         resetAfter = true,
+        isObstacle,
     }: {
         start: GridCoordinate;
         end: GridCoordinate;
         resetAfter?: boolean;
+        isObstacle?: (node: MazeNode) => boolean;
     }) {
         if (this.hasScores || this.hasBestPath) {
             this.resetScores();
@@ -128,7 +130,8 @@ export class Maze extends Grid<MazeNodeData> {
             neighbors.forEach((neighbor) => {
                 if (
                     neighbor.data.bestScore <= score + 1 ||
-                    neighbor.data.obstacle
+                    neighbor.data.obstacle ||
+                    isObstacle?.(neighbor)
                 ) {
                     return;
                 }

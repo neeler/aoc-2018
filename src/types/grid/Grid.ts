@@ -29,7 +29,11 @@ export class GridNode<T = undefined> {
         this.col = col;
         this.data = data;
         this.toString = () => toString(this);
-        this.posKey = `(${row},${col})`;
+        this.posKey = GridNode.getKey(this);
+    }
+
+    static getKey({ row, col }: GridCoordinate) {
+        return `(${row},${col})`;
     }
 }
 
