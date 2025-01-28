@@ -11,6 +11,7 @@ import {
     manhattanDistance,
 } from '~/types/grid/GridCoordinate';
 import { findBy } from '~/util/iterables';
+import { writeFileSync } from 'fs';
 
 export class GridNode<T = undefined> {
     readonly row: number;
@@ -283,6 +284,11 @@ export class Grid<T> {
                     .join(''),
             )
             .join('\n');
+    }
+
+    drawToFile(filePath: string, drawFn?: (node: GridNode<T>) => string) {
+        const data = this.toRawString(drawFn);
+        writeFileSync(filePath, data);
     }
 
     toString(drawFn?: (node: GridNode<T>) => string) {
